@@ -4,7 +4,7 @@ pipeline {
         nodejs 'node18'
     }
     environment{
-        EC2_IP= "3.94.108.208"
+        EC2_IP= "100.24.10.145"
         git_repo= "https://github.com/Nirnay2001/Portfolio.git"
     } 
 
