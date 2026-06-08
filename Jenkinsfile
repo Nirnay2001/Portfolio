@@ -7,7 +7,6 @@ pipeline {
     } 
 
     stages {
-        
         stage('deploy'){
             steps{
                 sshagent(['ec2-ssh']){
