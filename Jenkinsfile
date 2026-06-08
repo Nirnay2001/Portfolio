@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment{
-        EC2_IP= "13.220.225.135"
+        EC2_IP= "54.160.198.14"
         git_repo= "https://github.com/Nirnay2001/Portfolio.git"
     } 
 
