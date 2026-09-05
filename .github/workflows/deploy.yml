@@ -1,4 +1,4 @@
-name: Deploy WebApp001 to EC2
+name: Deploy WebApp001
 
 on:
   push:
@@ -14,7 +14,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy index.html to EC2
+      - name: Prepare EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo add-apt-repository universe -y || true
+            sudo apt-get update
+            sudo apt-get install -y nginx
+            sudo mkdir -p /tmp/webapp
+            sudo mkdir -p /var/www/html
+            sudo systemctl enable nginx
+            sudo systemctl start nginx
+
+      - name: Copy index.html
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -23,13 +38,13 @@ jobs:
           source: "index.html"
           target: "/tmp/webapp"
 
-      - name: Deploy to Nginx
+      - name: Install website
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo mkdir -p /var/www/html
             sudo cp /tmp/webapp/index.html /var/www/html/index.html
+            sudo chmod 644 /var/www/html/index.html
             sudo systemctl restart nginx
